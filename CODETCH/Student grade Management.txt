@@ -1,0 +1,123 @@
+import java.util.*;
+
+class Student {
+    private String name;
+    private int rollNumber;
+    private Map<String, Integer> subjectMarks;
+
+    public Student(String name, int rollNumber) {
+        this.name = name;
+        this.rollNumber = rollNumber;
+        this.subjectMarks = new HashMap<>();
+    }
+
+    public void addMark(String subject, int mark) {
+        subjectMarks.put(subject, mark);
+    }
+
+    public double calculatePercentage() {
+        int totalMarks = 0;
+        for (int mark : subjectMarks.values()) {
+            totalMarks += mark;
+        }
+        return (double) totalMarks / subjectMarks.size();
+    }
+
+    public char calculateGrade() {
+        double percentage = calculatePercentage();
+        if (percentage >= 90) {
+            return 'A';
+        } else if (percentage >= 80) {
+            return 'B';
+        } else if (percentage >= 70) {
+            return 'C';
+        } else if (percentage >= 60) {
+            return 'D';
+        } else {
+            return 'F';
+        }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getRollNumber() {
+        return rollNumber;
+    }
+
+    public Map<String, Integer> getSubjectMarks() {
+        return subjectMarks;
+    }
+}
+
+class GradeManagementSystem {
+    private Map<Integer, Student> students;
+
+    public GradeManagementSystem() {
+        students = new HashMap<>();
+    }
+
+    public void addStudent(Student student) {
+        students.put(student.getRollNumber(), student);
+    }
+
+    public void updateStudentMark(int rollNumber, String subject, int mark) {
+        if (students.containsKey(rollNumber)) {
+            students.get(rollNumber).addMark(subject, mark);
+        } else {
+            System.out.println("Student not found.");
+        }
+    }
+
+    public void deleteStudent(int rollNumber) {
+        if (students.containsKey(rollNumber)) {
+            students.remove(rollNumber);
+            System.out.println("Student deleted successfully.");
+        } else {
+            System.out.println("Student not found.");
+        }
+    }
+
+    public void printStudentDetails(int rollNumber) {
+        if (students.containsKey(rollNumber)) {
+            Student student = students.get(rollNumber);
+            System.out.println("Name: " + student.getName());
+            System.out.println("Roll Number: " + student.getRollNumber());
+            System.out.println("Subject Marks:");
+            for (Map.Entry<String, Integer> entry : student.getSubjectMarks().entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+            }
+            System.out.println("Overall Percentage: " + student.calculatePercentage());
+            System.out.println("Grade: " + student.calculateGrade());
+        } else {
+            System.out.println("Student not found.");
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        GradeManagementSystem system = new GradeManagementSystem();
+
+        Student student1 = new Student("John", 101);
+        student1.addMark("Math", 90);
+        student1.addMark("Science", 85);
+        student1.addMark("English", 95);
+        system.addStudent(student1);
+
+        Student student2 = new Student("Alice", 102);
+        student2.addMark("Math", 80);
+        student2.addMark("Science", 75);
+        student2.addMark("English", 85);
+        system.addStudent(student2);
+
+        system.printStudentDetails(101);
+
+        system.updateStudentMark(102, "Math", 85);
+        system.printStudentDetails(102);
+
+        system.deleteStudent(101);
+        system.printStudentDetails(101);
+    }
+}
